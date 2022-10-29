@@ -1,10 +1,11 @@
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
-import { TypePlaceFields } from '../types';
-import { createClient, Entry } from 'contentful';
+import { TypePlace, TypePlaceFields } from '../types';
+import { createClient } from 'contentful';
 import Head from 'next/head';
+import PlacesList from '../components/PlacesList';
 
 export const getStaticProps: GetStaticProps<{
-    places: Entry<TypePlaceFields>[];
+    places: TypePlace[];
 }> = async () => {
     const client = createClient({
         space: process.env.CONTENTFUL_SPACE_ID!,
@@ -31,7 +32,11 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
                 <meta name="description" content="" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main></main>
+            <main>
+                <section>
+                    <PlacesList places={places} />
+                </section>
+            </main>
             <footer></footer>
         </div>
     );
