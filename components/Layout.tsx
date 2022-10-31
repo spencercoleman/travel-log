@@ -1,22 +1,25 @@
+import { ReactNode } from 'react';
+import { Container } from '@chakra-ui/react';
 import Head from 'next/head';
 
 interface Props {
-    children: JSX.Element;
+    children: ReactNode;
 }
 
 const Layout = ({ children }: Props) => {
     return (
-        <div>
+        <>
             <Head>
                 <title>Travel Log</title>
                 <meta name="description" content="" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <main>{children}</main>
-
-            <footer></footer>
-        </div>
+            <Container maxW="container.xl" py={3}>
+                <main>{children}</main>
+                <footer></footer>
+            </Container>
+        </>
     );
 };
 

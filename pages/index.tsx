@@ -26,7 +26,7 @@ export const getStaticProps: GetStaticProps<{
 const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
     return (
         <section>
-            <PlacesList places={places} />
+            <PlacesList title={'Places to go'} places={places} />
         </section>
     );
 };
