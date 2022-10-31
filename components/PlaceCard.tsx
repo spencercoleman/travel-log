@@ -95,7 +95,7 @@ const PlaceCard = ({ place }: PlaceCardProps): JSX.Element => {
         <Box
             borderRadius="lg"
             overflow="hidden"
-            boxShadow="lg"
+            boxShadow="md"
             position="relative"
             pb={1}
         >

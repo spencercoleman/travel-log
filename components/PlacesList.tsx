@@ -1,4 +1,4 @@
-import { Heading, SimpleGrid, Stack } from '@chakra-ui/react';
+import { SimpleGrid, Stack } from '@chakra-ui/react';
 import { TypePlace } from '../types';
 import PlaceCard from './PlaceCard';
 

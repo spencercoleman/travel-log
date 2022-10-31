@@ -1,6 +1,14 @@
 import { useState, useEffect } from 'react';
 import { InferGetStaticPropsType, GetStaticProps } from 'next';
-import { Heading, Button, Flex, Select, Stack } from '@chakra-ui/react';
+import {
+    Heading,
+    Button,
+    Box,
+    Select,
+    Container,
+    theme,
+    SimpleGrid,
+} from '@chakra-ui/react';
 import { TypePlace, TypePlaceFields } from '../types';
 import { createClient } from 'contentful';
 import PlacesList from '../components/PlacesList';
@@ -17,9 +25,19 @@ export const getStaticProps: GetStaticProps<{
         content_type: 'place',
     });
 
+    const places = response.items.sort((a, b) => {
+        if (a.fields.name < b.fields.name) {
+            return -1;
+        }
+        if (a.fields.name > b.fields.name) {
+            return 1;
+        }
+        return 0;
+    });
+
     return {
         props: {
-            places: response.items,
+            places: places,
         },
         revalidate: 1,
     };
@@ -59,64 +77,98 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
     }, [places, placeTypeFilter, temperatureFilter, distanceFilter]);
 
     return (
-        <section>
-            <Stack spacing={3}>
-                <Heading as="h2" size="lg">
-                    Places to go
-                </Heading>
+        <>
+            <Box as="section" py={4}>
+                <Container maxW="container.xl">
+                    <Heading as="h2" size="lg">
+                        Places to go
+                    </Heading>
+                </Container>
 
-                <Flex gap={2}>
-                    <Select
-                        placeholder="Place type"
-                        value={placeTypeFilter}
-                        onChange={(e) => setPlaceTypeFilter(e.target.value)}
-                    >
-                        {placeTypes.map((placeType) => (
-                            <option
-                                key={placeType}
-                                value={placeType.toLowerCase()}
+                <Box
+                    position="sticky"
+                    top={0}
+                    zIndex={20}
+                    backgroundColor={theme.colors.white}
+                    boxShadow="md"
+                >
+                    <Container maxW="container.xl" py={4}>
+                        <SimpleGrid columns={[3, 5, 6, 7]} gap={2}>
+                            <Select
+                                placeholder="Place type"
+                                value={placeTypeFilter}
+                                size="sm"
+                                onChange={(e) =>
+                                    setPlaceTypeFilter(e.target.value)
+                                }
                             >
-                                {placeType}
-                            </option>
-                        ))}
-                    </Select>
-                    <Select
-                        placeholder="Temperature"
-                        value={temperatureFilter}
-                        onChange={(e) => setTemperatureFilter(e.target.value)}
-                    >
-                        {temperatures.map((temperature) => (
-                            <option
-                                key={temperature}
-                                value={temperature.toLowerCase()}
+                                {placeTypes.map((placeType) => (
+                                    <option
+                                        key={placeType}
+                                        value={placeType.toLowerCase()}
+                                    >
+                                        {placeType}
+                                    </option>
+                                ))}
+                            </Select>
+                            <Select
+                                placeholder="Temperature"
+                                value={temperatureFilter}
+                                size="sm"
+                                onChange={(e) =>
+                                    setTemperatureFilter(e.target.value)
+                                }
                             >
-                                {temperature}
-                            </option>
-                        ))}
-                    </Select>
-                    <Select
-                        placeholder="Distance"
-                        value={distanceFilter}
-                        onChange={(e) => setDistanceFilter(e.target.value)}
-                    >
-                        {distances.map((distance) => (
-                            <option
-                                key={distance}
-                                value={distance.toLowerCase()}
+                                {temperatures.map((temperature) => (
+                                    <option
+                                        key={temperature}
+                                        value={temperature.toLowerCase()}
+                                    >
+                                        {temperature}
+                                    </option>
+                                ))}
+                            </Select>
+                            <Select
+                                placeholder="Distance"
+                                value={distanceFilter}
+                                size="sm"
+                                onChange={(e) =>
+                                    setDistanceFilter(e.target.value)
+                                }
                             >
-                                {distance}
-                            </option>
-                        ))}
-                    </Select>
+                                {distances.map((distance) => (
+                                    <option
+                                        key={distance}
+                                        value={distance.toLowerCase()}
+                                    >
+                                        {distance}
+                                    </option>
+                                ))}
+                            </Select>
 
-                    <Button minW="fit-content" onClick={clearFilters}>
-                        Clear Filters
-                    </Button>
-                </Flex>
+                            <Button
+                                onClick={clearFilters}
+                                size="sm"
+                                sx={{
+                                    display:
+                                        placeTypeFilter ||
+                                        temperatureFilter ||
+                                        distanceFilter
+                                            ? 'initial'
+                                            : 'none',
+                                }}
+                            >
+                                Clear Filters
+                            </Button>
+                        </SimpleGrid>
+                    </Container>
+                </Box>
 
-                <PlacesList places={filteredPlaces} />
-            </Stack>
-        </section>
+                <Container maxW="container.xl" py={4}>
+                    <PlacesList places={filteredPlaces} />
+                </Container>
+            </Box>
+        </>
     );
 };
 

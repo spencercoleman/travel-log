@@ -1,5 +1,4 @@
 import { ReactNode } from 'react';
-import { Container } from '@chakra-ui/react';
 import Head from 'next/head';
 
 interface Props {
@@ -15,10 +14,8 @@ const Layout = ({ children }: Props) => {
                 <link rel="icon" href="/favicon.ico" />
             </Head>
 
-            <Container maxW="container.xl" py={3}>
-                <main>{children}</main>
-                <footer></footer>
-            </Container>
+            <main>{children}</main>
+            <footer></footer>
         </>
     );
 };
