@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { TypePlace, TypePlaceFields } from '../types';
 import { createClient } from 'contentful';
+import Hero from '../components/Hero';
 import PlacesList from '../components/PlacesList';
 
 export const getStaticProps: GetStaticProps<{
@@ -78,6 +79,8 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
     return (
         <>
+            <Hero />
+
             <Box as="section" py={4}>
                 <Container maxW="container.xl">
                     <Heading as="h2" size="md">
