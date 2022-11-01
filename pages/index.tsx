@@ -80,7 +80,7 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
         <>
             <Box as="section" py={4}>
                 <Container maxW="container.xl">
-                    <Heading as="h2" size="lg">
+                    <Heading as="h2" size="md">
                         Places to go
                     </Heading>
                 </Container>
