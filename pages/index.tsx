@@ -24,21 +24,12 @@ export const getStaticProps: GetStaticProps<{
 
     const response = await client.getEntries<TypePlaceFields>({
         content_type: 'place',
-    });
-
-    const places = response.items.sort((a, b) => {
-        if (a.fields.name < b.fields.name) {
-            return -1;
-        }
-        if (a.fields.name > b.fields.name) {
-            return 1;
-        }
-        return 0;
+        order: 'fields.name',
     });
 
     return {
         props: {
-            places: places,
+            places: response.items,
         },
         revalidate: 1,
     };
@@ -46,6 +37,7 @@ export const getStaticProps: GetStaticProps<{
 
 const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const [filteredPlaces, setFilteredPlaces] = useState<TypePlace[]>([]);
+    const [chosenPlace, setChosenPlace] = useState<TypePlace | null>(null);
     const [placeTypeFilter, setPlaceTypeFilter] = useState<string>('');
     const [temperatureFilter, setTemperatureFilter] = useState<string>('');
     const [distanceFilter, setDistanceFilter] = useState<string>('');
@@ -58,6 +50,24 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
         setPlaceTypeFilter('');
         setTemperatureFilter('');
         setDistanceFilter('');
+    };
+
+    const isUnvisitedPlaces = (): boolean => {
+        return filteredPlaces.some((place) => place.fields.visited === false);
+    };
+
+    const decidePlace = (): void => {
+        if (!isUnvisitedPlaces()) {
+            return;
+        }
+
+        const unvisitedPlaces = filteredPlaces.filter(
+            (place) => place.fields.visited === false
+        );
+
+        const placeIndex = Math.floor(Math.random() * unvisitedPlaces.length);
+
+        setChosenPlace(unvisitedPlaces[placeIndex]);
     };
 
     useEffect(() => {
@@ -101,6 +111,7 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
                                 placeholder="Place type"
                                 value={placeTypeFilter}
                                 size="sm"
+                                borderRadius="md"
                                 onChange={(e) =>
                                     setPlaceTypeFilter(e.target.value)
                                 }
@@ -118,6 +129,7 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
                                 placeholder="Temperature"
                                 value={temperatureFilter}
                                 size="sm"
+                                borderRadius="md"
                                 onChange={(e) =>
                                     setTemperatureFilter(e.target.value)
                                 }
@@ -135,6 +147,7 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
                                 placeholder="Distance"
                                 value={distanceFilter}
                                 size="sm"
+                                borderRadius="md"
                                 onChange={(e) =>
                                     setDistanceFilter(e.target.value)
                                 }
@@ -148,7 +161,6 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
                                     </option>
                                 ))}
                             </Select>
-
                             <Button
                                 onClick={clearFilters}
                                 size="sm"
@@ -163,6 +175,23 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
                             >
                                 Clear Filters
                             </Button>
+
+                            {isUnvisitedPlaces() && (
+                                <Button
+                                    onClick={decidePlace}
+                                    size="sm"
+                                    backgroundColor={theme.colors.cyan[700]}
+                                    color={theme.colors.white}
+                                    sx={{
+                                        '&:hover, &:focus': {
+                                            backgroundColor:
+                                                theme.colors.cyan[800],
+                                        },
+                                    }}
+                                >
+                                    Choose a place
+                                </Button>
+                            )}
                         </SimpleGrid>
                     </Container>
                 </Box>
