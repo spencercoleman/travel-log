@@ -1,12 +1,5 @@
-import {
-    Badge,
-    Box,
-    Heading,
-    Stack,
-    Icon,
-    Flex,
-    chakra,
-} from '@chakra-ui/react';
+import { TypePlace } from '../types';
+import { Box, Heading, Stack, Icon, Flex, chakra } from '@chakra-ui/react';
 import {
     FaMountain,
     FaBuilding,
@@ -17,9 +10,8 @@ import {
     FaThermometerThreeQuarters,
 } from 'react-icons/fa';
 import { IoAirplane, IoLocationSharp } from 'react-icons/io5';
-import { TypePlace } from '../types';
 import Image from 'next/image';
-import React, { ReactNode } from 'react';
+import Tag from './Tag';
 
 const CardImage = chakra(Image, {
     baseStyle: { maxH: 225, maxW: 'auto' },
@@ -36,28 +28,6 @@ const CardImage = chakra(Image, {
             'priority',
         ].includes(prop),
 });
-
-interface TagProps {
-    colorScheme?: string;
-    children: ReactNode;
-}
-
-const Tag = ({ colorScheme, children }: TagProps): JSX.Element => {
-    return (
-        <Badge
-            colorScheme={colorScheme}
-            textTransform="initial"
-            borderRadius="xl"
-            display="flex"
-            alignItems="center"
-            gap={1}
-            px={3}
-            py={1}
-        >
-            {children}
-        </Badge>
-    );
-};
 
 interface PlaceCardProps {
     place: TypePlace;
@@ -135,13 +105,11 @@ const PlaceCard = ({ place }: PlaceCardProps): JSX.Element => {
                         <Icon as={getPlaceIcon(type)} />
                         {type.slice(0, 1).toUpperCase() + type.slice(1)}
                     </Tag>
-
                     <Tag>
                         <Icon as={getTemperatureIcon(temperature)} />
                         {temperature.slice(0, 1).toUpperCase() +
                             temperature.slice(1)}
                     </Tag>
-
                     <Tag>
                         <Icon as={IoLocationSharp} />
                         {distance.slice(0, 1).toUpperCase() + distance.slice(1)}
