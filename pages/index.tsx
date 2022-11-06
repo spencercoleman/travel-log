@@ -12,6 +12,7 @@ import {
 import { TypePlace, TypePlaceFields } from '../types';
 import { createClient } from 'contentful';
 import Hero from '../components/Hero';
+import ChosenPlaceModal from '../components/ChosenPlaceModal';
 import PlacesList from '../components/PlacesList';
 
 export const getStaticProps: GetStaticProps<{
@@ -38,6 +39,7 @@ export const getStaticProps: GetStaticProps<{
 const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
     const [filteredPlaces, setFilteredPlaces] = useState<TypePlace[]>([]);
     const [chosenPlace, setChosenPlace] = useState<TypePlace | null>(null);
+    const [hasChosenPlace, setHasChosenPlace] = useState(false);
     const [placeTypeFilter, setPlaceTypeFilter] = useState<string>('');
     const [temperatureFilter, setTemperatureFilter] = useState<string>('');
     const [distanceFilter, setDistanceFilter] = useState<string>('');
@@ -56,7 +58,7 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
         return filteredPlaces.some((place) => place.fields.visited === false);
     };
 
-    const decidePlace = (): void => {
+    const choosePlace = (): void => {
         if (!isUnvisitedPlaces()) {
             return;
         }
@@ -67,7 +69,13 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
         const placeIndex = Math.floor(Math.random() * unvisitedPlaces.length);
 
+        setHasChosenPlace(true);
         setChosenPlace(unvisitedPlaces[placeIndex]);
+    };
+
+    const handleModalClose = (): void => {
+        setHasChosenPlace(false);
+        setChosenPlace(null);
     };
 
     useEffect(() => {
@@ -90,6 +98,14 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
     return (
         <>
             <Hero />
+
+            {chosenPlace && (
+                <ChosenPlaceModal
+                    isOpen={hasChosenPlace}
+                    onClose={handleModalClose}
+                    chosenPlace={chosenPlace}
+                />
+            )}
 
             <Box as="section" py={4}>
                 <Container maxW="container.xl">
@@ -178,7 +194,7 @@ const Home = ({ places }: InferGetStaticPropsType<typeof getStaticProps>) => {
 
                             {isUnvisitedPlaces() && (
                                 <Button
-                                    onClick={decidePlace}
+                                    onClick={choosePlace}
                                     size="sm"
                                     backgroundColor={theme.colors.cyan[700]}
                                     color={theme.colors.white}
